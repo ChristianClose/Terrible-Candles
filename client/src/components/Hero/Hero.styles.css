@@ -1,0 +1,44 @@
+.hero{
+    background-color: black;
+    background-position: center 80%;
+    min-height: 25vh;
+}
+
+.hero-container{
+    background: hsla(100, 0%, 50%, 0.2);
+    border-style: solid;
+    border-image: 
+    linear-gradient(
+      hsla(100, 0%, 50%, 0.1), 
+      rgba(0, 0, 0, 0)
+    ) 1 10%;
+    border-radius: 2%;
+    width: 50%;
+    max-height: 15%; 
+}
+
+.outlined-text-1{
+    text-shadow: 
+        -1px -1px 0 #000, 
+        1px -1px 0 #000, 
+        -1px 1px 0 #000, 
+        1px 1px 0 #000;
+}
+
+.outlined-text-2{
+    text-shadow: 
+        -2px -2px 0 #000, 
+        2px -2px 0 #000, 
+        -2px 2px 0 #000, 
+        2px 2px 0 #000;
+}
+
+.light-blue{
+    color: #58c9f6
+}
+
+@media only screen and (max-width: 600px){
+    .hero-container{
+        width: 100%;
+    }
+}
