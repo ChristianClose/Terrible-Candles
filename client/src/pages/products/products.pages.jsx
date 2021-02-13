@@ -1,9 +1,8 @@
 import React from "react";
+import Products from "../../components/Products/Products.component";
 
-function Products(){
-    return (
-        <h1>Hello</h1>
-    )
+function ProductsPage() {
+  return <Products />;
 }
 
-export default Products;
+export default ProductsPage;

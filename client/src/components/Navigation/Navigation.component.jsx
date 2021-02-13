@@ -1,9 +1,20 @@
-import React from "react";
-import { Navbar, Nav, Form, Button, FormControl } from "react-bootstrap";
+import React, { useState } from "react";
+import {
+  Navbar,
+  Nav,
+  Button,
+  Accordion,
+  Col,
+  Row,
+  Collapse,
+  Container,
+} from "react-bootstrap";
 import { withRouter } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
+import Cart from "../Cart/Cart.component";
 
 function Navigation(props) {
+  const [open, setOpen] = useState(false);
   const { location } = props;
   return (
     <header>
@@ -22,12 +33,28 @@ function Navigation(props) {
               <Nav.Link>Products</Nav.Link>
             </LinkContainer>
           </Nav>
-          <Form inline>
-            <FormControl type="text" placeholder="Search" className="mr-sm-2" />
-            <Button variant="outline-dark"> Search </Button>
-          </Form>
+
+          <Col align="end" md={6}>
+            <Button
+              variant="dark"
+              eventKey="0"
+              onClick={() => setOpen(!open)}
+              aria-controls="cart"
+              aria-expanded={open}
+            >
+              <i className="fas fa-shopping-cart text-light" />
+            </Button>
+          </Col>
         </Navbar.Collapse>
       </Navbar>
+
+      <Row className="justify-content-end" align="end">
+        <Collapse in={open}>
+          <Col id="cart" className="" align="end" md={5}>
+            <Cart />
+          </Col>
+        </Collapse>
+      </Row>
     </header>
   );
 }

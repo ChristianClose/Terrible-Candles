@@ -11,8 +11,8 @@ import { getProducts } from "../../redux/productsSlice/productsSlice";
 
 function Home(props) {
   const links = [
-    { text: "Learn More", link: "/products" },
-    { text: "Buy", link: "/products" },
+    { text: "Learn More", link: "/products/4" },
+    { text: "Buy", link: "/products/4" },
   ];
   const dispatch = useDispatch();
 
@@ -22,7 +22,7 @@ function Home(props) {
       dispatch(getReviews);
       dispatch(getProducts);
     });
-  }, [batch, dispatch]);
+  }, [dispatch]);
 
   return (
     <>
