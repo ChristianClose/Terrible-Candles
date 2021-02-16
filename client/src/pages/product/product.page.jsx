@@ -3,7 +3,7 @@ import { Col, Row, Card, Container, Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { getProducts } from "../../redux/productsSlice/productsSlice";
-import { addItem } from "../../redux/cartSlice/cartSlice";
+import { addItem, isOpen } from "../../redux/cartSlice/cartSlice";
 
 const ProductPage = ({ match }) => {
   const { loading, products } = useSelector((state) => state.products);
@@ -21,8 +21,6 @@ const ProductPage = ({ match }) => {
     const [product] = products
       .filter((item) => item._id === match.params.id)
       .map((item) => ({ ...item, qty }));
-    console.log(product, "afsfasf");
-
     return (
       <>
         {console.log(qty)}
@@ -56,6 +54,7 @@ const ProductPage = ({ match }) => {
                           className="mt-2"
                           onClick={() => {
                             dispatch(addItem(product));
+                            dispatch(isOpen(true));
                           }}
                         >
                           Add to Cart

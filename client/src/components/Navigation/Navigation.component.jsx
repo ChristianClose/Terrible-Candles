@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Navbar,
   Nav,
   Button,
-  Accordion,
   Col,
   Row,
   Collapse,
@@ -12,10 +11,13 @@ import {
 import { withRouter } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import Cart from "../Cart/Cart.component";
+import { useSelector, useDispatch } from "react-redux";
+import { isOpen } from "../../redux/cartSlice/cartSlice";
 
 function Navigation(props) {
-  const [open, setOpen] = useState(false);
   const { location } = props;
+  const { items, open } = useSelector((state) => state.cart);
+  const dispatch = useDispatch();
   return (
     <header>
       <Navbar bg="dark" expand="lg" variant="dark">
@@ -37,20 +39,41 @@ function Navigation(props) {
           <Col align="end" md={6}>
             <Button
               variant="dark"
-              eventKey="0"
-              onClick={() => setOpen(!open)}
+              onClick={() => dispatch(isOpen(!open))}
               aria-controls="cart"
               aria-expanded={open}
             >
-              <i className="fas fa-shopping-cart text-light" />
+              <Container>
+                <i className="fas fa-shopping-cart text-light" />
+                <strong className="ml-1">
+                  {items.reduce(
+                    (acc, item) => parseInt(acc) + parseInt(item.qty),
+                    0
+                  )}
+                </strong>{" "}
+              </Container>
             </Button>
           </Col>
         </Navbar.Collapse>
       </Navbar>
 
-      <Row className="justify-content-end" align="end">
+      <Row
+        className="justify-content-end ml-auto"
+        align="end"
+        style={{
+          width: "50%",
+        }}
+      >
         <Collapse in={open}>
-          <Col id="cart" className="" align="end" md={5}>
+          <Col
+            id="cart"
+            className="position-absolute"
+            align="end"
+            md={3}
+            style={{
+              zIndex: 9999,
+            }}
+          >
             <Cart />
           </Col>
         </Collapse>

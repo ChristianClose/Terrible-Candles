@@ -2,21 +2,21 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const cartSlice = createSlice({
     name: "cart",
-    initialState: [],
+    initialState: { items: [], open: false },
     reducers: {
         addItem(state, action) {
-            const itemExists = state.find(item => item._id === action.payload._id);
-            console.log(JSON.stringify(action.payload));
-
+            const itemExists = state.items.find(item => item._id === action.payload._id);
             if (itemExists) {
-                const newPayload = { ...action.payload, qty: action.payload.qty + itemExists.qty };
-                const newState = state.filter(item => item._id != itemExists._id);
-                console.log(newPayload, newState);
-                return [...newState, newPayload];
+                const newPayload = { ...action.payload, qty: parseInt(action.payload.qty) + parseInt(itemExists.qty) };
+                const cartItems = state.items.filter(item => item._id != itemExists._id);
+                return { ...state, items: [...cartItems, newPayload] };
             }
-            return [...state, action.payload];
+            return { ...state, items: [...state.items, action.payload] };
+        },
+        isOpen(state, action) {
+            return { ...state, open: action.payload };
         }
     }
 });
-export const { addItem } = cartSlice.actions;
+export const { addItem, isOpen } = cartSlice.actions;
 export default cartSlice.reducer;
