@@ -7,8 +7,9 @@ import {
   Row,
   Collapse,
   Container,
+  ListGroup,
 } from "react-bootstrap";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { LinkContainer } from "react-router-bootstrap";
 import Cart from "../Cart/Cart.component";
 import { useSelector, useDispatch } from "react-redux";
@@ -18,6 +19,22 @@ function Navigation(props) {
   const { location } = props;
   const { items, open } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
+
+  const checkout = (
+    <ListGroup align="center" className="w-100">
+      <ListGroup.Item className="w-100">
+        <Button
+          as={Link}
+          to="/checkout"
+          className="w-75"
+          onClick={() => dispatch(isOpen(false))}
+        >
+          Checkout
+        </Button>
+      </ListGroup.Item>
+    </ListGroup>
+  );
+
   return (
     <header>
       <Navbar bg="dark" expand="lg" variant="dark">
@@ -57,24 +74,19 @@ function Navigation(props) {
         </Navbar.Collapse>
       </Navbar>
 
-      <Row
-        className="justify-content-end ml-auto"
-        align="end"
-        style={{
-          width: "50%",
-        }}
-      >
+      <Row className="justify-content-end mr-5">
         <Collapse in={open}>
           <Col
             id="cart"
             className="position-absolute"
             align="end"
-            md={3}
+            lg={2}
             style={{
               zIndex: 9999,
             }}
           >
             <Cart />
+            {items.length !== 0 && checkout}
           </Col>
         </Collapse>
       </Row>

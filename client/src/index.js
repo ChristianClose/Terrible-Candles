@@ -7,6 +7,10 @@ import { Provider } from 'react-redux';
 import store from './redux/store';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+const CLIENT_ID = "sb";
+const script = document.createElement("script");
+script.src = `https://www.paypal.com/sdk/js?client-id=${CLIENT_ID}`;
+document.getElementsByTagName("head")[0].appendChild(script);
 ReactDOM.render(
   <Provider store={store} >
     <React.StrictMode>

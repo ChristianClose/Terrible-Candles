@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Col, Row, Card, Container, Button, Form } from "react-bootstrap";
+import { Col, Row, Card, Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import { getProducts } from "../../redux/productsSlice/productsSlice";
 import { addItem, isOpen } from "../../redux/cartSlice/cartSlice";
 
@@ -14,10 +13,8 @@ const ProductPage = ({ match }) => {
     dispatch,
     products,
   ]);
-  console.log(products);
 
   if (!loading) {
-    console.log(products);
     const [product] = products
       .filter((item) => item._id === match.params.id)
       .map((item) => ({ ...item, qty }));
