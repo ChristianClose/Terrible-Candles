@@ -1,33 +1,33 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-export const getPromos = createAsyncThunk('promos/getPromos', async () => {
-    const response = await fetch("/api/promos");
+export const getOrders = createAsyncThunk('orders/getOrders', async () => {
+    const response = await fetch("/api/orders");
 
     return await response.json();
 });
 
-const promoSlice = createSlice({
-    name: 'promos',
+const ordersSlice = createSlice({
+    name: 'orders',
     initialState: {
         loading: true,
         error: "",
-        promos: []
+        orders: []
     },
     extraReducers: {
-        [getPromos.pending]: (state, action) => {
+        [getOrders.pending]: (state, action) => {
             return { ...state, loading: true };
         },
-        [getPromos.fulfilled]: (state, action) => {
+        [getOrders.fulfilled]: (state, action) => {
             return {
                 ...state,
                 loading: false,
-                promos: action.payload
+                orders: action.payload
             };
         },
-        [getPromos.rejected]: (state, action) => {
+        [getOrders.rejected]: (state, action) => {
             return { ...state, loading: false, error: action.error };
-        }
+        },
     }
 });
 
-export default promoSlice.reducer;
+export default ordersSlice.reducer;

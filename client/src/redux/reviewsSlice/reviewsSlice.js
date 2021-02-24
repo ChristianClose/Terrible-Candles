@@ -10,7 +10,7 @@ const reviewsSlice = createSlice({
     initialState: {
         loading: true,
         error: "",
-        reviews: null
+        reviews: []
     },
     extraReducers: {
         [getReviews.pending]: (state, action) => {

@@ -6,8 +6,12 @@ import { Card, Col, Row } from "react-bootstrap";
 const Promo = ({ cards = [] }) => {
   const { promos, error, loading } = useSelector((state) => state.promos);
   const dispatch = useDispatch();
+  error && console.log(error);
 
-  useEffect(() => !promos && dispatch(getPromos()), [dispatch, promos]);
+  useEffect(() => promos.length === 0 && dispatch(getPromos()), [
+    dispatch,
+    promos,
+  ]);
 
   return (
     <>

@@ -19,7 +19,6 @@ function Navigation(props) {
   const { location } = props;
   const { items, open } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
-
   const checkout = (
     <ListGroup align="center" className="w-100">
       <ListGroup.Item className="w-100">

@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Col,
-  ListGroup,
-  Row,
-  Image,
-  Container,
-  Button,
-  Form,
-} from "react-bootstrap";
+import { Col, ListGroup, Row, Image, Button, Form } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItem, addItem } from "../../redux/cartSlice/cartSlice";
 
@@ -51,7 +43,6 @@ const Cart = ({ taxPercentage }) => {
             <Form.Control
               size="sm"
               as="select"
-              defaultValue={item.qty}
               value={item.qty}
               onChange={(e) => {
                 console.log(e.target.value);

@@ -1,15 +1,49 @@
-import React, { useState } from "react";
-import { Row, Col, Container, Form, Button, ListGroup } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import React from "react";
+import { Row, Col, Container, ListGroup } from "react-bootstrap";
 import Cart from "../../components/Cart/Cart.component";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { PayPalButton } from "react-paypal-button-v2";
 
-const PaymentPage = () => {
-  const { address, address2, city, state, zip } = useSelector(
-    (state) => state.shippingAddress
-  );
-  const { items, subtotal } = useSelector((state) => state.cart);
+const PaymentPage = ({ history }) => {
+  const dispatch = useDispatch();
+  const shipping = useSelector((globalState) => globalState.shippingAddress);
+  const { address, address2, city, state, zip } = shipping;
+  const cart = useSelector((globalState) => globalState.cart);
+  const { subtotal } = cart;
+
+  const postOrder = async (order) => {
+    console.log(order);
+
+    const details = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order),
+    };
+    await fetch("/api/orders", details);
+  };
+
+  const handleSuccess = (details, data) => {
+    const order = {
+      items: cart.items,
+      shipping,
+      payer: {
+        firstName: details.payer.name.given_name,
+        lastName: details.payer.name.surname,
+        email: details.payer.email_address,
+        phone: details.payer.phone_number,
+      },
+      time: new Intl.DateTimeFormat("en-US", {
+        dataStyle: "full",
+        timeStyle: "long",
+      }).format(new Date(details.update_time)),
+      status: details.status,
+      orderId: data.orderID,
+    };
+    postOrder(order);
+    history.push(`/orders/${data.orderID}`);
+  };
 
   const customListGroup = (title, item) => (
     <ListGroup>
@@ -39,11 +73,7 @@ const PaymentPage = () => {
           <Container className="mt-2">
             <PayPalButton
               amount={parseFloat((subtotal * 1.1).toFixed(2))}
-              onSuccess={(details, data) => {
-                alert(
-                  "Transaction completed by " + details.payer.name.given_name
-                );
-              }}
+              onSuccess={(details, data) => handleSuccess(details, data)}
               debug
             />
           </Container>

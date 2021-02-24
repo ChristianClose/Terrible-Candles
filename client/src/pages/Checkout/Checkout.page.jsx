@@ -4,37 +4,26 @@ import { Link } from "react-router-dom";
 import Cart from "../../components/Cart/Cart.component";
 import { setAddress } from "../../redux/shippingSlice/shippingSlice";
 import { useDispatch } from "react-redux";
+import { handleBlur, handleChange, isInputEmpty } from "./utils/checkout.utils";
 import "./Checkout.styles.css";
 
 const Checkout = ({ history }) => {
-  const [state, setState] = useState({});
+  const [state, setState] = useState({
+    address: "",
+    city: "",
+    state: "",
+    zip: "",
+  });
   const dispatch = useDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const { address, city, zip } = state;
 
-    if (address && city && state.state && zip) {
+    if (isInputEmpty(state, ["address2"])) {
+      alert("Please complete the required fields!");
+    } else {
       dispatch(setAddress(state));
       history.push("/payment");
-    } else {
-      alert("Address, city, state, and zip code are required!");
-    }
-  };
-
-  const handleChange = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value });
-  };
-
-  const handleBlur = (e) => {
-    if (e.target.value === "") {
-      e.target.classList.add("bg-danger", "formPlaceHolder");
-      e.target.placeholder = e.target.placeholder.split("*Required* ")[1]
-        ? "*Required* " + e.target.placeholder.split("*Required* ")[1]
-        : "*Required* " + e.target.placeholder;
-      //e.target.classList.add("text-light");
-    } else {
-      e.target.classList.remove("bg-danger", "formPlaceHolder");
     }
   };
 
@@ -46,10 +35,10 @@ const Checkout = ({ history }) => {
 
           <Form>
             <Form.Group controlId="checkoutAddress">
-              <Form.Label>Address</Form.Label>
+              <Form.Label>*Address</Form.Label>
               <Form.Control
                 placeholder="1234 Main St"
-                onChange={handleChange}
+                onChange={(e) => setState(handleChange(e, state))}
                 onBlur={handleBlur}
                 name="address"
                 required
@@ -60,17 +49,17 @@ const Checkout = ({ history }) => {
               <Form.Label>Address 2</Form.Label>
               <Form.Control
                 placeholder="Apartment, studio, or floor"
-                onChange={handleChange}
+                onChange={(e) => setState(handleChange(e, state))}
                 name="address2"
               />
             </Form.Group>
 
             <Form.Row>
               <Form.Group as={Col} controlId="checkoutFormCity" required>
-                <Form.Label>City</Form.Label>
+                <Form.Label>*City</Form.Label>
                 <Form.Control
                   placeholder="Enter City"
-                  onChange={handleChange}
+                  onChange={(e) => setState(handleChange(e, state))}
                   onBlur={handleBlur}
                   name="city"
                   required
@@ -78,10 +67,10 @@ const Checkout = ({ history }) => {
               </Form.Group>
 
               <Form.Group as={Col} controlId="checkoutFormState">
-                <Form.Label>State</Form.Label>
+                <Form.Label>*State</Form.Label>
                 <Form.Control
                   placeholder="Enter State"
-                  onChange={handleChange}
+                  onChange={(e) => setState(handleChange(e, state))}
                   onBlur={handleBlur}
                   name="state"
                   required
@@ -89,17 +78,21 @@ const Checkout = ({ history }) => {
               </Form.Group>
 
               <Form.Group as={Col} controlId="checkoutFormZip">
-                <Form.Label>Postal Code</Form.Label>
+                <Form.Label>*Postal Code</Form.Label>
                 <Form.Control
                   type="number"
                   placeholder="Enter Postal Code"
-                  onChange={handleChange}
+                  onChange={(e) => setState(handleChange(e, state))}
                   onBlur={handleBlur}
                   name="zip"
                   required
                 />
               </Form.Group>
             </Form.Row>
+            <p>
+              <strong>*</strong>
+              <small> Designates a required field</small>
+            </p>
             <Button
               as={Link}
               to="/payment"

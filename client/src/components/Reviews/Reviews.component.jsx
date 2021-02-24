@@ -7,7 +7,10 @@ const Reviews = () => {
   const dispatch = useDispatch();
   const { reviews, loading, error } = useSelector((state) => state.reviews);
 
-  useEffect(() => !reviews && dispatch(getReviews()), [dispatch, reviews]);
+  useEffect(() => reviews.length === 0 && dispatch(getReviews()), [
+    dispatch,
+    reviews,
+  ]);
   error && console.log(error);
 
   const stars = loading ? (
