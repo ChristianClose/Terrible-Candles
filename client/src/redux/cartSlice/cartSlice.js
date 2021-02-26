@@ -25,8 +25,12 @@ const cartSlice = createSlice({
         },
         isOpen(state, action) {
             return { ...state, open: action.payload };
+        },
+        resetCart() {
+            localStorage.removeItem("cart");
+            return { items: [], open: false, subtotal: 0 };
         }
     }
 });
-export const { addItem, isOpen, removeItem } = cartSlice.actions;
+export const { addItem, isOpen, removeItem, resetCart } = cartSlice.actions;
 export default cartSlice.reducer;

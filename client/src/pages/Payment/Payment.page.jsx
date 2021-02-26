@@ -3,11 +3,12 @@ import { Row, Col, Container, ListGroup } from "react-bootstrap";
 import Cart from "../../components/Cart/Cart.component";
 import { useSelector, useDispatch } from "react-redux";
 import { PayPalButton } from "react-paypal-button-v2";
+import { resetCart } from "../../redux/cartSlice/cartSlice";
 
 const PaymentPage = ({ history }) => {
   const dispatch = useDispatch();
   const shipping = useSelector((globalState) => globalState.shippingAddress);
-  const { address, address2, city, state, zip } = shipping;
+  const { firstName, lastName, address, address2, city, state, zip } = shipping;
   const cart = useSelector((globalState) => globalState.cart);
   const { subtotal } = cart;
 
@@ -25,6 +26,7 @@ const PaymentPage = ({ history }) => {
   };
 
   const handleSuccess = (details, data) => {
+    console.log(details, data);
     const order = {
       items: cart.items,
       shipping,
@@ -40,8 +42,10 @@ const PaymentPage = ({ history }) => {
       }).format(new Date(details.update_time)),
       status: details.status,
       orderId: data.orderID,
+      total: parseFloat((subtotal * 1.1).toFixed(2)),
     };
     postOrder(order);
+    dispatch(resetCart());
     history.push(`/orders/${data.orderID}`);
   };
 
@@ -58,6 +62,7 @@ const PaymentPage = ({ history }) => {
       <Col>
         <Container className="m-3 p-3 border">
           <h2 align="center">Shipping</h2>
+          {customListGroup("Name", `${firstName} ${lastName}`)}
           {customListGroup("Address", address)}
           {address2 && customListGroup("Address 2", address2)}
           <Row>

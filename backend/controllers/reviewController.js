@@ -1,3 +1,6 @@
-import reviews from '../data/reviews.js';
+import Review from '../models/reviewModel.js';
 
-export const getReviews = (req, res) => res.json(reviews);
+export const getReviews = async (req, res) => {
+    const reviews = await Review.find({});
+    res.json(reviews);
+}; 

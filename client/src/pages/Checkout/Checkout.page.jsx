@@ -9,6 +9,8 @@ import "./Checkout.styles.css";
 
 const Checkout = ({ history }) => {
   const [state, setState] = useState({
+    firstName: "",
+    lastName: "",
     address: "",
     city: "",
     state: "",
@@ -34,6 +36,30 @@ const Checkout = ({ history }) => {
           <h2 align="center">Shipping</h2>
 
           <Form>
+            <Form.Row>
+              <Form.Group as={Col} controlId="checkoutFormFirstName" required>
+                <Form.Label>*First Name</Form.Label>
+                <Form.Control
+                  placeholder="Enter First Name"
+                  onChange={(e) => setState(handleChange(e, state))}
+                  onBlur={handleBlur}
+                  name="firstName"
+                  required
+                />
+              </Form.Group>
+
+              <Form.Group as={Col} controlId="checkoutFormLastName" required>
+                <Form.Label>*Last Name</Form.Label>
+                <Form.Control
+                  placeholder="Enter Last Name"
+                  onChange={(e) => setState(handleChange(e, state))}
+                  onBlur={handleBlur}
+                  name="lastName"
+                  required
+                />
+              </Form.Group>
+            </Form.Row>
+
             <Form.Group controlId="checkoutAddress">
               <Form.Label>*Address</Form.Label>
               <Form.Control

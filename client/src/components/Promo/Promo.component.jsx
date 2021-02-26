@@ -19,13 +19,13 @@ const Promo = ({ cards = [] }) => {
         <i className="fas fa-spinner fa-pulse" />
       ) : (
         <Row className="justify-content-center" style={{ margin: "0 10%" }}>
-          {promos.map((card, index) => (
-            <Row key={`promo${index}`}>
+          {promos.map((card) => (
+            <Row key={`promo${card._id}`}>
               <Col>
                 <Card style={{ width: "15rem", height: "100%" }}>
                   <Card.Body align="center">
                     <Card.Img
-                      src={card.img}
+                      src={card.image}
                       style={{ background: "gray", height: "75%" }}
                     />
                     <Card.Title>{card.title}</Card.Title>
