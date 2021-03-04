@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 import generateToken from '../utils/generateToken.js';
 
@@ -42,15 +43,29 @@ export const authUser = async (req, res, next) => {
             error.statusCode = 401;
             error.name = "Invalid credentials";
             next(error);
-            //res.status(401).json({ error: "Invalid username or password" });
         }
     } catch (error) {
         error = new Error("Username was not found");
         error.statusCode = 400;
         next(error);
-        //res.status(400).json({ error: err });
     }
 };
+
+export const authUserByToken = async(req, res, next) => {
+    if(!req.cookies.token){
+        res.status(401).end();
+    } else {
+        const decodedToken = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+        const user = await User.findById(decodedToken.id).select("-password -createdAt -updatedAt -__v");
+        if(user){
+            res.send(user)
+        } else {
+            res.status(401).end();
+        }
+    }
+
+
+}
 
 
 export const getUser = async (req, res) => {

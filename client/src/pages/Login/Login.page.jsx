@@ -42,7 +42,7 @@ const Login = () => {
           onChange={handleChange}
         />
       </Form.Group>
-      <Button type="submit" classname="mx-auto">
+      <Button type="submit" className="mx-auto">
         Login
       </Button>
       {error && <p className="mt-1 mb-0">Error: {error}</p>}

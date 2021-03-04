@@ -2,7 +2,6 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 export const authUser = createAsyncThunk('users/authUser', async (userInfo) => {
 
-    console.log(userInfo);
     const options = {
         method: "POST",
         headers: {
@@ -19,6 +18,17 @@ export const authUser = createAsyncThunk('users/authUser', async (userInfo) => {
     }
 
 });
+
+export const authUserByToken = createAsyncThunk("users/authUserByToken", async() => {
+    console.log("fasfs")
+    const response = await fetch('/api/users/login');
+    if(response.status >= 400){
+        const {message} = await response.json();
+        throw new Error(message);
+    } else {
+        return await response.json();
+    }
+})
 
 const userSlice = createSlice({
     name: 'users',
@@ -49,6 +59,19 @@ const userSlice = createSlice({
         },
         [authUser.rejected]: (state, action) => {
             return { ...state, loading: false, error: action.error.message };
+        },
+        [authUserByToken.pending]: (state, action) => {
+            return { ...state, loading: true };
+        },
+        [authUserByToken.fulfilled]: (state, action) => {
+            return {
+                ...state,
+                loading: false,
+                users: [action.payload]
+            };
+        },
+        [authUserByToken.rejected]: (state, action) => {
+            return { ...state, loading: false};
         }
     }
 });

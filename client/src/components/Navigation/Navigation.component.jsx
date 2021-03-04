@@ -66,15 +66,14 @@ function Navigation(props) {
                   Login
                 </Button>
               ) : (
-                <Button
-                  variant="dark"
-                  onClick={() => dispatch(setLoginOpen())}
-                  aria-controls="login"
-                  aria-expanded={openLogin}
-                >
-                  {users[0].username}
-                </Button>
-              )}
+                  <Button
+                    as={Link}
+                    to="/profile"
+                    variant="dark"
+                  >
+                    {users[0].username}
+                  </Button>
+                )}
             </Col>
 
             <Col align="center" md={6} className="mr-0">
@@ -113,7 +112,7 @@ function Navigation(props) {
           </Col>
         </Collapse>
 
-        <Collapse in={openLogin}>
+        <Collapse in={!users[0] ? openLogin : false}>
           <Col
             id="login"
             className="position-absolute"
