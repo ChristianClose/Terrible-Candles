@@ -10,5 +10,8 @@
     "dev": "concurrently \"npm run server \" \"npm run client \""
   },
   "author": "Christian Close",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.5"
+  }
 }

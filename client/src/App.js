@@ -8,6 +8,7 @@ const Product = React.lazy(() => import("./pages/Product/Product.page"));
 const Checkout = React.lazy(() => import("./pages/Checkout/Checkout.page"));
 const Payment = React.lazy(() => import("./pages/Payment/Payment.page"));
 const OrderDetails = React.lazy(() => import("./pages/OrderDetails/OrderDetails.page"));
+const Login = React.lazy(() => import("./pages/Login/Login.page"));
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route exact path="/checkout" component={Checkout} />
         <Route exact path="/payment" component={Payment} />
         <Route exact path="/products" component={Products} />
+        <Route exact path="/login" component={Login} />
         <Route path="/products/:id" component={Product} />
         <Route path="/orders/:id" component={OrderDetails} />
       </Suspense>

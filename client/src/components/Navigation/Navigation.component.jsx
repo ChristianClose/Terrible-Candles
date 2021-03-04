@@ -14,10 +14,13 @@ import { LinkContainer } from "react-router-bootstrap";
 import Cart from "../Cart/Cart.component";
 import { useSelector, useDispatch } from "react-redux";
 import { isOpen } from "../../redux/cartSlice/cartSlice";
+import Login from "../../pages/Login/Login.page";
+import { setLoginOpen } from "../../redux/userSlice/userSlice";
 
 function Navigation(props) {
   const { location } = props;
-  const { items, open } = useSelector((state) => state.cart);
+  const { items, open: openCart } = useSelector((state) => state.cart);
+  const { open: openLogin, users } = useSelector((state) => state.users);
   const dispatch = useDispatch();
   const checkout = (
     <ListGroup align="center" className="w-100">
@@ -51,15 +54,36 @@ function Navigation(props) {
               <Nav.Link>Products</Nav.Link>
             </LinkContainer>
           </Nav>
+          <Row className="align-items-middle">
+            <Col align="center" md={6}>
+              {!users[0] ? (
+                <Button
+                  variant="dark"
+                  onClick={() => dispatch(setLoginOpen())}
+                  aria-controls="login"
+                  aria-expanded={openLogin}
+                >
+                  Login
+                </Button>
+              ) : (
+                <Button
+                  variant="dark"
+                  onClick={() => dispatch(setLoginOpen())}
+                  aria-controls="login"
+                  aria-expanded={openLogin}
+                >
+                  {users[0].username}
+                </Button>
+              )}
+            </Col>
 
-          <Col align="end" md={6}>
-            <Button
-              variant="dark"
-              onClick={() => dispatch(isOpen(!open))}
-              aria-controls="cart"
-              aria-expanded={open}
-            >
-              <Container>
+            <Col align="center" md={6} className="mr-0">
+              <Button
+                variant="dark"
+                onClick={() => dispatch(isOpen(!openCart))}
+                aria-controls="cart"
+                aria-expanded={openCart}
+              >
                 <i className="fas fa-shopping-cart text-light" />
                 <strong className="ml-1">
                   {items.reduce(
@@ -67,16 +91,31 @@ function Navigation(props) {
                     0
                   )}
                 </strong>{" "}
-              </Container>
-            </Button>
-          </Col>
+              </Button>
+            </Col>
+          </Row>
         </Navbar.Collapse>
       </Navbar>
 
       <Row className="justify-content-end mr-5">
-        <Collapse in={open}>
+        <Collapse in={openCart}>
           <Col
             id="cart"
+            className="position-absolute"
+            align="end"
+            lg={2}
+            style={{
+              zIndex: 9998,
+            }}
+          >
+            <Cart />
+            {items.length !== 0 && checkout}
+          </Col>
+        </Collapse>
+
+        <Collapse in={openLogin}>
+          <Col
+            id="login"
             className="position-absolute"
             align="end"
             lg={2}
@@ -84,8 +123,7 @@ function Navigation(props) {
               zIndex: 9999,
             }}
           >
-            <Cart />
-            {items.length !== 0 && checkout}
+            <Login />
           </Col>
         </Collapse>
       </Row>
