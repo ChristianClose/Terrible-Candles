@@ -15,10 +15,9 @@ import Cart from "../Cart/Cart.component";
 import { useSelector, useDispatch } from "react-redux";
 import { isOpen } from "../../redux/cartSlice/cartSlice";
 import Login from "../../pages/Login/Login.page";
-import { setLoginOpen } from "../../redux/userSlice/userSlice";
+import { setLoginOpen, logout } from "../../redux/userSlice/userSlice";
 
-function Navigation(props) {
-  const { location } = props;
+function Navigation({ location, history }) {
   const { items, open: openCart } = useSelector((state) => state.cart);
   const { open: openLogin, users } = useSelector((state) => state.users);
   const dispatch = useDispatch();
@@ -67,9 +66,10 @@ function Navigation(props) {
                 </Button>
               ) : (
                   <Button
-                    as={Link}
-                    to="/profile"
                     variant="dark"
+                    onClick={() => dispatch(setLoginOpen())}
+                    aria-controls="userOptions"
+                    aria-expanded={openLogin}
                   >
                     {users[0].username}
                   </Button>
@@ -96,7 +96,7 @@ function Navigation(props) {
         </Navbar.Collapse>
       </Navbar>
 
-      <Row className="justify-content-end mr-5">
+      <Row className="justify-content-end">
         <Collapse in={openCart}>
           <Col
             id="cart"
@@ -123,6 +123,30 @@ function Navigation(props) {
             }}
           >
             <Login />
+          </Col>
+        </Collapse>
+
+        <Collapse in={users[0] ? openLogin : false} align="center">
+          <Col
+            id="userOptions"
+            className="position-absolute p-3 bg-light p-3 rounded"
+            md={2}
+            style={{
+              zIndex: 9999,
+            }}
+          >
+            <Container style={{ display: "flex", justifyContent: "space-between" }} align="center">
+              <Button
+                as={Link}
+                to="/profile"
+                variant="secondary">
+                Profile
+              </Button>
+              <Button onClick={() => {
+                dispatch(logout());
+                history.push("/");
+              }}>Logout</Button>
+            </Container>
           </Col>
         </Collapse>
       </Row>

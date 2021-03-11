@@ -1,5 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
+const initialState = {
+    loading: true,
+    error: "",
+    open: false,
+    message: "",
+    users: []
+}
+
 export const authUser = createAsyncThunk('users/authUser', async (userInfo) => {
 
     const options = {
@@ -20,8 +28,26 @@ export const authUser = createAsyncThunk('users/authUser', async (userInfo) => {
 });
 
 export const authUserByToken = createAsyncThunk("users/authUserByToken", async() => {
-    console.log("fasfs")
     const response = await fetch('/api/users/login');
+    if(response.status >= 400){
+        const {message} = await response.json();
+        throw new Error(message);
+    } else {
+        return await response.json();
+    }
+})
+
+export const updateUser = createAsyncThunk("users/updateUser", async(userInfo) => {
+    console.log(userInfo)
+    const options = {
+        method: "PUT",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(userInfo)
+    };
+
+    const response = await fetch('/api/users', options);
     if(response.status >= 400){
         const {message} = await response.json();
         throw new Error(message);
@@ -32,18 +58,18 @@ export const authUserByToken = createAsyncThunk("users/authUserByToken", async()
 
 const userSlice = createSlice({
     name: 'users',
-    initialState: {
-        loading: true,
-        error: "",
-        open: false,
-        users: []
-    },
+    initialState,
     reducers: {
         setLoginOpen(state) {
             return {
                 ...state,
                 open: !state.open
             };
+        },
+        logout(){
+            const date = Date.now;
+            document.cookie = `auth=; expires=${date}` ;
+            return initialState
         }
     },
     extraReducers: {
@@ -72,9 +98,26 @@ const userSlice = createSlice({
         },
         [authUserByToken.rejected]: (state, action) => {
             return { ...state, loading: false};
+        },
+        [authUserByToken.rejected]: (state, action) => {
+            return { ...state, loading: false };
+        },
+        [updateUser.pending]: (state, action) => {
+            return { ...state, loading: true };
+        },
+        [updateUser.fulfilled]: (state, action) => {
+            return {
+                ...state,
+                loading: false,
+                message: action.payload.message,
+                users: [action.payload.user]
+            };
+        },
+        [updateUser.rejected]: (state, action) => {
+            return { ...state, loading: false};
         }
     }
 });
 
-export const { setLoginOpen } = userSlice.actions;
+export const { setLoginOpen, logout } = userSlice.actions;
 export default userSlice.reducer;

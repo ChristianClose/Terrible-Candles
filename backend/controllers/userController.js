@@ -31,6 +31,7 @@ export const authUser = async (req, res, next) => {
             const maxAgeInMilliseconds = (DAYS * HOURS_IN_DAY) * (MINUTES_IN_HOUR * SECONDS_IN_MINUTE) * MILLISECONDS_IN_SECOND;
 
             res.cookie("token", generateToken(user._id), { maxAge: maxAgeInMilliseconds, httpOnly: true, sameSite: true });
+            res.cookie("auth", generateToken(user._id), { maxAge: maxAgeInMilliseconds, sameSite: true });
             res.json({
                 _id: user._id,
                 username: user.username,
@@ -52,12 +53,13 @@ export const authUser = async (req, res, next) => {
 };
 
 export const authUserByToken = async(req, res, next) => {
-    if(!req.cookies.token){
+    if(!req.cookies.token || !req.cookies.auth){
         res.status(401).end();
     } else {
         const decodedToken = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+        const decodedAuth = jwt.verify(req.cookies.auth, process.env.JWT_SECRET);
         const user = await User.findById(decodedToken.id).select("-password -createdAt -updatedAt -__v");
-        if(user){
+        if(user && decodedAuth){
             res.send(user)
         } else {
             res.status(401).end();
@@ -79,12 +81,20 @@ export const getUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     try {
+        if(req.body.password){
+            if(req.body.password !== req.body.confirmPassword){
+                throw new Error("Passwords do not match");
+            }
+        } else {
+            delete req.body.password
+            delete req.body.confirmPassword
+        }
+        console.log(req.body)
         const user = await User.findByIdAndUpdate(req.body._id, req.body, { new: true }).select("-password -createdAt -updatedAt -__v");
+        console.log(req.body)
         res.json({ message: "User updated successfully", user });
     } catch (error) {
         console.log(error);
         res.status(500).json({ error });
     }
-
-
 };

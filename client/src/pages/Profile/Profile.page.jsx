@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Row, Col, Container, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { updateUser } from '../../redux/userSlice/userSlice';
 
 const Checkout = ({ history }) => {
-    const { loading, users } = useSelector(state => state.users);
+    const { loading, users, message } = useSelector(state => state.users);
     const user = users[0];
     const [state, setState] = useState({
+        _id: "",
         firstName: "",
         lastName: "",
         email: "",
@@ -18,8 +20,9 @@ const Checkout = ({ history }) => {
         if (!user && !loading) {
             history.push("/");
         }
-        if (!loading) {
+        if (!loading && user) {
             setState({
+                _id: user._id,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
@@ -27,17 +30,22 @@ const Checkout = ({ history }) => {
                 confirmPassword: "",
             });
         }
-    }, [history, user]);
+    }, [history, user, loading]);
 
     const dispatch = useDispatch();
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        dispatch(updateUser(state));
     };
 
-    const handleChange = () => {
-
+    const handleChange = (e) => {
+        setState({
+            ...state,
+            [e.target.name]: e.target.value,
+        });
     };
+
     return (
         <Row md={2}>
             <Col>
@@ -50,7 +58,7 @@ const Checkout = ({ history }) => {
                                     <Form.Label>First Name</Form.Label>
                                     <Form.Control
                                         placeholder="Enter First Name"
-                                        onChange={(e) => setState(handleChange(e, state))}
+                                        onChange={handleChange}
                                         name="firstName"
                                         value={state.firstName}
                                     />
@@ -60,7 +68,7 @@ const Checkout = ({ history }) => {
                                     <Form.Label>Last Name</Form.Label>
                                     <Form.Control
                                         placeholder="Enter Last Name"
-                                        onChange={(e) => setState(handleChange(e, state))}
+                                        onChange={handleChange}
                                         name="lastName"
                                         value={state.lastName}
                                     />
@@ -71,7 +79,7 @@ const Checkout = ({ history }) => {
                                 <Form.Label>Email Address</Form.Label>
                                 <Form.Control
                                     placeholder="name@example.com"
-                                    onChange={(e) => setState(handleChange(e, state))}
+                                    onChange={handleChange}
                                     name="email"
                                     value={state.email}
                                 />
@@ -81,16 +89,18 @@ const Checkout = ({ history }) => {
                                 <Form.Label>Password</Form.Label>
                                 <Form.Control
                                     placeholder="Enter Password"
-                                    onChange={(e) => setState(handleChange(e, state))}
-                                    name="address2"
+                                    onChange={handleChange}
+                                    name="password"
+                                    type="password"
                                     value={state.password}
                                 />
                             </Form.Group>
                             <Form.Group controlId="profileFormConfirmPassword" required>
                                 <Form.Label>Confirm Password</Form.Label>
                                 <Form.Control
-                                    onChange={(e) => setState(handleChange(e, state))}
-                                    name="city"
+                                    onChange={handleChange}
+                                    name="confirmPassword"
+                                    type="password"
                                     placeholder="Confirm Password"
                                     value={state.confirmPassword}
                                 />
@@ -106,6 +116,7 @@ const Checkout = ({ history }) => {
                                 Submit
                         </Button>
                         </Form>
+                        {message && (<p>{message}</p>)}
                     </Container>
                 </Container>
             </Col>
