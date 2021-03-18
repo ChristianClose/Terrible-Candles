@@ -53,8 +53,8 @@ function Navigation({ location, history }) {
               <Nav.Link>Products</Nav.Link>
             </LinkContainer>
           </Nav>
-          <Row className="align-items-middle">
-            <Col align="center" md={6}>
+          <Row className="align-items-middle" md={3}>
+            <Col align="center">
               {!users[0] ? (
                 <Button
                   variant="dark"
@@ -76,20 +76,25 @@ function Navigation({ location, history }) {
                 )}
             </Col>
 
-            <Col align="center" md={6} className="mr-0">
+            <Col align="center">
+              {!users[0] && <Button as={Link} to="/signup" variant="dark">Signup</Button>}
+            </Col>
+
+            <Col align="center">
               <Button
                 variant="dark"
                 onClick={() => dispatch(isOpen(!openCart))}
                 aria-controls="cart"
                 aria-expanded={openCart}
               >
-                <i className="fas fa-shopping-cart text-light" />
-                <strong className="ml-1">
-                  {items.reduce(
-                    (acc, item) => parseInt(acc) + parseInt(item.qty),
-                    0
-                  )}
-                </strong>{" "}
+                <i className="fas fa-shopping-cart text-light" >
+                  <strong className="ml-1">
+                    {items.reduce(
+                      (acc, item) => parseInt(acc) + parseInt(item.qty),
+                      0
+                    )}
+                  </strong>
+                </i>
               </Button>
             </Col>
           </Row>

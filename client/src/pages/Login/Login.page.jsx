@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 import { authUser } from "../../redux/userSlice/userSlice";
 
 const Login = () => {
@@ -43,9 +44,18 @@ const Login = () => {
           onChange={handleChange}
         />
       </Form.Group>
-      <Button type="submit" className="mx-auto">
-        Login
-      </Button>
+      <Row>
+        <Col>
+          <Button type="submit" className="mx-auto">
+            Login
+          </Button>
+        </Col>
+        <Col>
+          <Link to="/signup">Don't have an account?</Link>
+        </Col>
+      </Row>
+
+
       {error && <p className="mt-1 mb-0">Error: {error}</p>}
     </Form>
   );
