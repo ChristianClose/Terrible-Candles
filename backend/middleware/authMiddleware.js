@@ -22,3 +22,16 @@ export const protect = async (req, res, next) => {
         res.status(401).json({ error: 'Not authorized, no token found' });
     }
 };
+
+export const isAdmin = async(req, res, next) => {
+    try {
+        if(req.user.isAdmin){
+            next();
+        } else {
+            throw new Error("Not authorized! User is not an admin")
+        }
+    } catch (error){
+        error.statusCode = 401;
+        next(error);
+    }
+}

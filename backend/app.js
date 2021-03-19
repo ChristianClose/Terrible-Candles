@@ -28,7 +28,6 @@ app.use("/api/orders", orderRoutes);
 app.use('/api/users', userRoutes);
 
 app.use((error, req, res, next) => {
-    console.log(error.message, "From error handler");
     if (!error.statusCode) {
         error.statusCode = 500;
     }

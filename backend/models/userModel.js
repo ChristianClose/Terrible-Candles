@@ -6,7 +6,8 @@ const userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
     email: String,
-    password: String
+    password: String,
+    isAdmin: {type: Boolean, default: false}
 }, { timestamps: true });
 
 async function encryptPassword(next) {
@@ -20,7 +21,6 @@ async function encryptPassword(next) {
             next(error);
         }
     }
-
     return next();
 }
 

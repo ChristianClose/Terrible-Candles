@@ -47,11 +47,11 @@ const Checkout = ({ history }) => {
     };
 
     return (
-        <Row md={2}>
+        <Row align="center">
             <Col>
                 <Container className="m-3 border">
                     <h1 align="center">Edit Profile</h1>
-                    <Container>
+                    <Container align="start">
                         <Form>
                             <Form.Row>
                                 <Form.Group as={Col} controlId="profileFormFirstName">

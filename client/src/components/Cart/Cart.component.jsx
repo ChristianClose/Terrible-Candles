@@ -107,15 +107,21 @@ const Cart = ({ taxPercentage }) => {
   return items.length === 0 ? (
     emptyCart
   ) : (
-    <Row md={1} className="bg-light">
-      <ListGroup className="justify-content-center" align="center">
-        {cartBody}
-        {cartSubtotal}
-        {taxPercentage && cartTax}
-        {taxPercentage && cartTotal}
+      <ListGroup as={Row} className="justify-content-center bg-light mx-auto" align="center">
+        <Col>
+          {cartBody}
+        </Col>
+        <Col>
+          {cartSubtotal}
+        </Col>
+        <Col>
+          {taxPercentage && cartTax}
+        </Col>
+        <Col>
+          {taxPercentage && cartTotal}
+        </Col>
       </ListGroup>
-    </Row>
-  );
+    );
 };
 
 export default Cart;

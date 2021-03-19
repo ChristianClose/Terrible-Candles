@@ -2,34 +2,49 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 import generateToken from '../utils/generateToken.js';
 
-export const createUser = async (req, res) => {
+const DAYS = 1;
+const HOURS_IN_DAY = 24;
+const MINUTES_IN_HOUR = 60;
+const SECONDS_IN_MINUTE = 60;
+const MILLISECONDS_IN_SECOND = 1000;
+const maxAgeInMilliseconds = (DAYS * HOURS_IN_DAY) * (MINUTES_IN_HOUR * SECONDS_IN_MINUTE) * MILLISECONDS_IN_SECOND;
+
+//CREATE
+export const createUser = async (req, res, next) => {
     try {
-        const foundUser = await User.findOne({ $or: [{ username: req.body.username, email: req.body.email }] });
+        const foundUser = await User.findOne({ $or: [{ username: req.body.username}, {email: req.body.email }] });
         if (!foundUser) {
-            await User.create(req.body);
-            res.status(201).json({ message: "User successfully created" });
+            req.body.isAdmin = false;
+            const user = await User.create(req.body);
+            const {_id, username, email, firstName, lastName} = user
+
+            res.cookie("token", generateToken(user._id), { maxAge: maxAgeInMilliseconds, httpOnly: true, sameSite: true });
+            res.cookie("auth", generateToken(user._id), { maxAge: maxAgeInMilliseconds, sameSite: true });
+            
+            res.status(201).json({ message: "User successfully created", 
+            user: {
+                _id,
+                username,
+                email,
+                firstName,
+                lastName
+
+            }});
         } else {
-            res.status(409).json({ error: "Username or email already exists!" });
+            throw new Error("Username or email already exists!");
         }
 
     } catch (error) {
-        res.status(400).json({ error });
+        error.statusCode = 409;
+        next(error);
     }
 };
-
+//READ
 export const authUser = async (req, res, next) => {
-    console.log(req.body);
     try {
         const user = await User.findOne({ username: req.body.username });
         const validPassword = await user.comparePassword(req.body.password);
         if (validPassword) {
-            const DAYS = 1;
-            const HOURS_IN_DAY = 24;
-            const MINUTES_IN_HOUR = 60;
-            const SECONDS_IN_MINUTE = 60;
-            const MILLISECONDS_IN_SECOND = 1000;
-            const maxAgeInMilliseconds = (DAYS * HOURS_IN_DAY) * (MINUTES_IN_HOUR * SECONDS_IN_MINUTE) * MILLISECONDS_IN_SECOND;
-
             res.cookie("token", generateToken(user._id), { maxAge: maxAgeInMilliseconds, httpOnly: true, sameSite: true });
             res.cookie("auth", generateToken(user._id), { maxAge: maxAgeInMilliseconds, sameSite: true });
             res.json({
@@ -65,21 +80,39 @@ export const authUserByToken = async(req, res, next) => {
             res.status(401).end();
         }
     }
-
-
 }
 
 
-export const getUser = async (req, res) => {
+export const getUser = async (req, res, next) => {
     try {
-        const user = await User.findById(req.body._id).select("-password");
-        res.json(user);
+        const user = await User.findById(req.params.id).select("-password");
+        if(!user){
+            throw new Error("User not found!")
+        }
+        res.status(200).json(user);
     } catch (error) {
-        res.status(400).json({ error: "User was not found" });
+        error.statusCode = 400;
+        console.log(error)
+        next(error)
     }
 };
 
-export const updateUser = async (req, res) => {
+export const getAllUsers = async (req, res, next) => {
+    try {
+        const users = await User.find({}).select("-password");
+        if(!users){
+            throw new Error("Users not found!")
+        }
+        res.status(200).json(users);
+    } catch (error) {
+        error.statusCode = 400;
+        console.log(error)
+        next(error)
+    }
+};
+
+//UPDATE
+export const updateUser = async (req, res, next) => {
     try {
         if(req.body.password){
             if(req.body.password !== req.body.confirmPassword){
@@ -89,12 +122,19 @@ export const updateUser = async (req, res) => {
             delete req.body.password
             delete req.body.confirmPassword
         }
-        console.log(req.body)
         const user = await User.findByIdAndUpdate(req.body._id, req.body, { new: true }).select("-password -createdAt -updatedAt -__v");
-        console.log(req.body)
         res.json({ message: "User updated successfully", user });
     } catch (error) {
-        console.log(error);
-        res.status(500).json({ error });
+        next(error)
     }
 };
+
+//DELETE
+export const deleteUser = async (req, res, next) => {
+    try {
+        const deletedUser = await User.findByIdAndDelete(req.params.id);
+        res.status(200).json({message: "Successfully deleted user id" + deletedUser._id})
+    } catch(error){
+        next(error);
+    }
+}

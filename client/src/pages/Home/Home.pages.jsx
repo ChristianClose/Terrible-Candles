@@ -1,18 +1,22 @@
 import React, { useEffect } from "react";
-import Hero from "../../components/Hero/Hero.component";
+import { batch, useDispatch } from "react-redux";
 import { Row, Col, Container } from "react-bootstrap";
+import { useSelector } from 'react-redux';
+import Hero from "../../components/Hero/Hero.component";
 import Promo from "../../components/Promo/Promo.component";
 import Reviews from "../../components/Reviews/Reviews.component";
 import Products from "../../components/Products/Products.component";
-import { batch, useDispatch } from "react-redux";
 import { getPromos } from "../../redux/promosSlice/promosSlice";
 import { getReviews } from "../../redux/reviewsSlice/reviewsSlice";
 import { getProducts } from "../../redux/productsSlice/productsSlice";
 
 function Home(props) {
+  const { products } = useSelector(state => state.products);
+  console.log(products);
+  const heroProduct = products.find((product) => product.name === "Strawberry Candle");
   const links = [
-    { text: "Learn More", link: "/products/4" },
-    { text: "Buy", link: "/products/4" },
+    { text: "Learn More", link: `/products/${heroProduct ? heroProduct._id : "/"}` },
+    { text: "Buy", link: `/products/${heroProduct ? heroProduct._id : "/"}` },
   ];
   const dispatch = useDispatch();
 

@@ -10,6 +10,7 @@ export const createUser  = createAsyncThunk("users/createUser", async(userInfo) 
     };
 
     const response = await fetch('/api/users', options);
+    console.log(response);
     if(response.status >= 400){
         const {message} = await response.json();
         throw new Error(message);
@@ -26,11 +27,10 @@ export const createUserExtraReducer = {
             return {
                 ...state,
                 loading: false,
-                message: action.payload.message,
                 users: [action.payload.user]
             };
         },
         [createUser.rejected]: (state, action) => {
-            return { ...state, loading: false};
+            return { ...state, loading: false, error: action.error.message};
         }
 }

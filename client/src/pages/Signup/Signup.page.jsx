@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Container, Form, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { setAddress } from "../../redux/shippingSlice/shippingSlice";
 import { useDispatch } from "react-redux";
 import { handleBlur, handleChange, isInputEmpty } from "../../utils/form.utils";
 import { useSelector } from 'react-redux';
+import { createUser } from "../../redux/userSlice/userSlice";
 import "./Signup.styles.css";
 
 const SignupPage = ({ history }) => {
@@ -16,18 +16,17 @@ const SignupPage = ({ history }) => {
         password: "",
         confirmPassword: "",
     });
-    const { users } = useSelector(state => state.users);
+    const { users, error } = useSelector(state => state.users);
     const user = users[0];
     const dispatch = useDispatch();
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (isInputEmpty(state, ["address2"])) {
+        if (isInputEmpty(state)) {
             alert("Please complete the required fields!");
         } else {
-            dispatch(setAddress(state));
-            history.push("/payment");
+            dispatch(createUser(state));
         }
     };
 
@@ -121,6 +120,8 @@ const SignupPage = ({ history }) => {
                             <strong>*</strong>
                             <small> Designates a required field</small>
                         </p>
+
+                        {error && <p><strong className="text-danger">{error}</strong></p>}
                         <Button
                             as={Link}
                             to="/payment"
